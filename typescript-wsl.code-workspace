@@ -1,0 +1,25 @@
+{
+  "folders": [
+    {
+      "name": "TypeScriptProject",
+      "path": ".",
+    },
+    {
+      "name": "TS",
+      "path": "../TS_KnowledgeBase",
+    },
+    {
+      "name": "LINUX",
+      "path": "../Linux-Knowledgebase",
+    },
+  ],
+  "settings": {
+    "terminal.integrated.defaultProfile.linux": "WSL TypeScript",
+    "terminal.integrated.cwd": "${workspaceFolder:TypeScriptProject}",
+    "remote.autoForwardPorts": true,
+    "remote.restoreForwardedPorts": true,
+    "workbench.editor.labelFormat": "medium",
+    "liveServer.settings.multiRootWorkspaceName": "TypeScriptProject",
+    "task.allowAutomaticTasks": "on",
+  },
+}

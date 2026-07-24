@@ -1,0 +1,273 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Node Setup: Installa Node in WSL",
+      "type": "process",
+      "command": "/bin/bash",
+      "args": ["${workspaceFolder}/.vscode/scripts/install-node.sh"],
+      "group": "build",
+      "presentation": {
+        "reveal": "always",
+        "focus": true,
+        "panel": "dedicated",
+        "clear": true
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "TypeScript Setup: Installa TypeScript e strumenti",
+      "type": "process",
+      "command": "/bin/bash",
+      "args": ["${workspaceFolder}/.vscode/scripts/install-typescript.sh"],
+      "group": "build",
+      "presentation": {
+        "reveal": "always",
+        "focus": true,
+        "panel": "dedicated",
+        "clear": true
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Setup: Verifica ambiente WSL TypeScript",
+      "type": "process",
+      "command": "/bin/bash",
+      "args": ["${workspaceFolder}/.vscode/scripts/verify-environment.sh"],
+      "group": "test",
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated",
+        "clear": true
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Setup: Completo Node + TypeScript",
+      "dependsOrder": "sequence",
+      "dependsOn": [
+        "Node Setup: Installa Node in WSL",
+        "TypeScript Setup: Installa TypeScript e strumenti",
+        "Setup: Verifica ambiente WSL TypeScript"
+      ],
+      "problemMatcher": []
+    },
+    {
+      "label": "NPM: Install",
+      "type": "process",
+      "command": "/bin/bash",
+      "args": ["${workspaceFolder}/.vscode/scripts/run-with-node.sh", "npm", "install"],
+      "group": "build",
+      "problemMatcher": []
+    },
+    {
+      "label": "NPM: Clean install",
+      "type": "process",
+      "command": "/bin/bash",
+      "args": ["${workspaceFolder}/.vscode/scripts/run-with-node.sh", "npm", "ci"],
+      "group": "build",
+      "problemMatcher": []
+    },
+    {
+      "label": "TypeScript: Build",
+      "type": "process",
+      "command": "/bin/bash",
+      "args": ["${workspaceFolder}/.vscode/scripts/run-with-node.sh", "npm", "run", "build"],
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated",
+        "clear": true
+      },
+      "problemMatcher": "$tsc"
+    },
+    {
+      "label": "TypeScript: Watch",
+      "type": "process",
+      "command": "/bin/bash",
+      "args": ["${workspaceFolder}/.vscode/scripts/run-with-node.sh", "npm", "run", "build:watch"],
+      "isBackground": true,
+      "runOptions": {
+        "runOn": "folderOpen",
+        "instanceLimit": 1,
+        "instancePolicy": "silent"
+      },
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated",
+        "group": "typescript-watch",
+        "clear": true
+      },
+      "problemMatcher": "$tsc-watch"
+    },
+    {
+      "label": "TypeScript: Controlla tipi",
+      "type": "process",
+      "command": "/bin/bash",
+      "args": ["${workspaceFolder}/.vscode/scripts/run-with-node.sh", "npm", "run", "typecheck"],
+      "group": "test",
+      "problemMatcher": "$tsc"
+    },
+    {
+      "label": "TypeScript: Esegui applicazione",
+      "type": "process",
+      "command": "/bin/bash",
+      "args": ["${workspaceFolder}/.vscode/scripts/run-with-node.sh", "npm", "run", "dev:once"],
+      "group": "test",
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated",
+        "clear": true
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "TypeScript: Dev watch",
+      "type": "process",
+      "command": "/bin/bash",
+      "args": ["${workspaceFolder}/.vscode/scripts/run-with-node.sh", "npm", "run", "dev"],
+      "isBackground": true,
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated",
+        "group": "typescript-dev",
+        "clear": true
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "TypeScript: Esegui file corrente",
+      "type": "process",
+      "command": "/bin/bash",
+      "args": ["${workspaceFolder}/.vscode/scripts/run-with-node.sh", "npm", "exec", "--", "tsx", "${file}"],
+      "group": "test",
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated",
+        "clear": true
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "TypeScript: Avvia file corrente per debugger",
+      "type": "process",
+      "command": "/bin/bash",
+      "args": [
+        "${workspaceFolder}/.vscode/scripts/run-with-node.sh",
+        "node",
+        "--inspect-brk=9229",
+        "--import",
+        "tsx",
+        "${file}"
+      ],
+      "isBackground": true,
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated",
+        "group": "typescript-debug",
+        "clear": true
+      },
+      "problemMatcher": {
+        "owner": "typescript-debug",
+        "pattern": {
+          "regexp": "^(.*)$",
+          "message": 1
+        },
+        "background": {
+          "activeOnStart": true,
+          "beginsPattern": "^.*Debugger listening on.*$",
+          "endsPattern": "^.*Debugger listening on.*$"
+        }
+      }
+    },
+    {
+      "label": "TypeScript: Avvia applicazione compilata per debugger",
+      "type": "process",
+      "command": "/bin/bash",
+      "args": [
+        "${workspaceFolder}/.vscode/scripts/run-with-node.sh",
+        "node",
+        "--inspect-brk=9230",
+        "${workspaceFolder}/dist/index.js"
+      ],
+      "dependsOrder": "sequence",
+      "dependsOn": "TypeScript: Build",
+      "isBackground": true,
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated",
+        "group": "typescript-debug",
+        "clear": true
+      },
+      "problemMatcher": {
+        "owner": "typescript-compiled-debug",
+        "pattern": {
+          "regexp": "^(.*)$",
+          "message": 1
+        },
+        "background": {
+          "activeOnStart": true,
+          "beginsPattern": "^.*Debugger listening on.*$",
+          "endsPattern": "^.*Debugger listening on.*$"
+        }
+      }
+    },
+    {
+      "label": "Node: Esegui JavaScript compilato",
+      "type": "process",
+      "command": "/bin/bash",
+      "args": ["${workspaceFolder}/.vscode/scripts/run-with-node.sh", "npm", "start"],
+      "group": "test",
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "focus": true,
+        "panel": "dedicated",
+        "clear": true
+      }
+    },
+    {
+      "label": "ESLint: Controlla progetto",
+      "type": "process",
+      "command": "/bin/bash",
+      "args": ["${workspaceFolder}/.vscode/scripts/run-with-node.sh", "npm", "run", "lint"],
+      "group": "test",
+      "problemMatcher": "$eslint-stylish"
+    },
+    {
+      "label": "ESLint: Correggi automaticamente",
+      "type": "process",
+      "command": "/bin/bash",
+      "args": ["${workspaceFolder}/.vscode/scripts/run-with-node.sh", "npm", "run", "lint:fix"],
+      "group": "test",
+      "problemMatcher": "$eslint-stylish"
+    },
+    {
+      "label": "Prettier: Controlla formattazione",
+      "type": "process",
+      "command": "/bin/bash",
+      "args": ["${workspaceFolder}/.vscode/scripts/run-with-node.sh", "npm", "run", "format:check"],
+      "group": "test",
+      "problemMatcher": []
+    },
+    {
+      "label": "Prettier: Formatta progetto",
+      "type": "process",
+      "command": "/bin/bash",
+      "args": ["${workspaceFolder}/.vscode/scripts/run-with-node.sh", "npm", "run", "format"],
+      "group": "build",
+      "problemMatcher": []
+    },
+    {
+      "label": "Qualità: Typecheck + ESLint + Prettier",
+      "type": "process",
+      "command": "/bin/bash",
+      "args": ["${workspaceFolder}/.vscode/scripts/run-with-node.sh", "npm", "run", "check"],
+      "group": "test",
+      "problemMatcher": ["$tsc", "$eslint-stylish"]
+    }
+  ]
+}
