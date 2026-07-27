@@ -11,6 +11,43 @@ IPartecipante<'Molitura'>	  Partecipante specificamente interessato alla molitur
 
 */
 
+const fields = ['Molitura', 'IntaglioLegno', 'LavorazioneCreta'] as const;
+
+type Field = (typeof fields)[number];
+
+type ArtisanMapDefinition = {
+  [F in Field]: {
+    jobs: readonly string[];
+
+    courses: readonly {
+      title: string;
+      descr: string;
+      durationInHours: number;
+    }[];
+
+    participants: readonly {
+      name: string;
+      surname: string;
+      birthCountry: string;
+      instructionLevel: number;
+      languageLevel: number;
+
+      // Deve corrispondere alla chiave esterna F
+      fieldOfInterest: F;
+    }[];
+
+    companies: readonly {
+      name: string;
+
+      // Deve corrispondere alla chiave esterna F
+      companyField: F;
+
+      description: string;
+      jobOpenings: readonly string[];
+    }[];
+  };
+};
+
 const artisanMap = {
   Molitura: {
     jobs: ['Mugnaio', 'Addetto alla macinazione', 'Manutentore di mulini'],
@@ -196,10 +233,29 @@ const artisanMap = {
       },
     ],
   },
-} as const;
+  /*
+  Metodo 1:
+  as const satisfies Record<Field, unknown> 
+  Record<Field, unknown> equivale a:
+
+  {
+    Molitura: unknown;
+    IntaglioLegno: unknown;
+    LavorazioneCreta: unknown;
+  }
+
+  Quindi satisfies controlla che artisanMap abbia le chiavi previste da Field.
+  unknown: le chiavi devono essere corrette, ma per ora non controllo la struttura 
+          interna dei valori.
+  Metodo 2:
+  as const satisfies ArtisanMapDefinition
+
+  in questo modo viene verificata la coerenza del settore anche nell'oggetto compilato con i dati. 
+
+  */
+} as const satisfies ArtisanMapDefinition;
 
 //---------------------GLOBAL TYPE MAP
-type Field = keyof typeof artisanMap;
 
 /*
 
@@ -366,7 +422,7 @@ Per esempio, questa assertion sarebbe falsa ma TypeScript si fiderebbe:
 const fields = ['Molitura', 'SettoreInesistente'] as Field[];
 
 */
-const fields = Object.keys(artisanMap) as Field[];
+//const fields = Object.keys(artisanMap) as Field[];
 /*
 ParticipantsByField
 Rappresenta una union di istanze della classe:
